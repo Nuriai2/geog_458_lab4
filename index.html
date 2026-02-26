@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GEOG 458 Lab 4 – Tile Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+    .map-overlay {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.2;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      max-width: 240px;
+      z-index: 2;
+    }
+
+    .group-title {
+      font-weight: 650;
+      margin: 6px 0 8px 0;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e6e6e6;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <div class="map-overlay" id="menu">
+    <div class="group-title">Basemap</div>
+
+    <div class="row">
+      <input type="radio" name="basemap" id="bm-grayscale" value="mapbox/light-v11" checked>
+      <label for="bm-grayscale">Grayscale</label>
+    </div>
+
+    <div class="row">
+      <input type="radio" name="basemap" id="bm-streets" value="mapbox/streets-v12">
+      <label for="bm-streets">Streets</label>
+    </div>
+
+    <div class="row">
+      <input type="radio" name="basemap" id="bm-satellite" value="mapbox/satellite-streets-v12">
+      <label for="bm-satellite">Satellite</label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="group-title">Tile Layers</div>
+
+    <div class="row">
+      <input type="checkbox" id="lyr-modified">
+      <label for="lyr-modified">Modified Basemap</label>
+    </div>
+
+    <div class="row">
+      <input type="checkbox" id="lyr-rwi">
+      <label for="lyr-rwi">RWI Station data</label>
+    </div>
+
+    <div class="row">
+      <input type="checkbox" id="lyr-both">
+      <label for="lyr-both">Basemap and Data</label>
+    </div>
+
+    <div class="row">
+      <input type="checkbox" id="lyr-uw">
+      <label for="lyr-uw">UW Theme</label>
+    </div>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = "pk.eyJ1IjoibnVyaWFpMiIsImEiOiJjbWt1Ymo2dnQxdjBtM2NweWptZzBlZ3Y2In0.VqeH9DKwcNbbCzvmoan-0w";
+
+    // Save checkbox state so it stays after basemap switch
+    const layerState = {
+      modified: false,
+      rwi: false,
+      both: false,
+      uw: false
+    };
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/light-v11",
+      center: [-122.3321, 47.6062],
+      zoom: 11
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), "top-right");
+    map.addControl(new mapboxgl.ScaleControl({ maxWidth: 140, unit: "imperial" }), "bottom-left");
+
+    // IMPORTANT: spaces in folder names must be encoded as %20
+    const tileLayers = [
+      {
+        key: "modified",
+        id: "tiles_modified",
+        folder: "assets/Modified%20Basemap/{z}/{x}/{y}.png",
+        checkboxId: "lyr-modified"
+      },
+      {
+        key: "rwi",
+        id: "tiles_rwi",
+        folder: "assets/RWI%20Station%20data/{z}/{x}/{y}.png",
+        checkboxId: "lyr-rwi"
+      },
+      {
+        key: "both",
+        id: "tiles_both",
+        folder: "assets/Basemap%20and%20Data/{z}/{x}/{y}.png",
+        checkboxId: "lyr-both"
+      },
+      {
+        key: "uw",
+        id: "tiles_uw",
+        folder: "assets/UW%20Theme/{z}/{x}/{y}.png",
+        checkboxId: "lyr-uw"
+      }
+    ];
+
+    function addOrRestoreTileLayers() {
+      tileLayers.forEach(t => {
+        if (!map.getSource(t.id)) {
+          map.addSource(t.id, {
+            type: "raster",
+            tiles: [t.folder],
+            tileSize: 256,
+            attribution: "Tiles generated in QGIS (GEOG 458 Lab 4)"
+          });
+        }
+
+        if (!map.getLayer(t.id)) {
+          map.addLayer({
+            id: t.id,
+            type: "raster",
+            source: t.id,
+            layout: { visibility: "none" }
+          });
+        }
+
+        map.setLayoutProperty(t.id, "visibility", layerState[t.key] ? "visible" : "none");
+      });
+    }
+
+    map.on("load", () => {
+      addOrRestoreTileLayers();
+
+      // checkbox behavior
+      tileLayers.forEach(t => {
+        const el = document.getElementById(t.checkboxId);
+        el.addEventListener("change", (e) => {
+          layerState[t.key] = e.target.checked;
+          if (map.getLayer(t.id)) {
+            map.setLayoutProperty(t.id, "visibility", e.target.checked ? "visible" : "none");
+          }
+        });
+      });
+
+      // basemap radio behavior
+      document.querySelectorAll("input[name='basemap']").forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          map.setStyle("mapbox://styles/" + e.target.value);
+        });
+      });
+    });
+
+    // After basemap style changes, re-add raster layers
+    map.on("style.load", () => {
+      addOrRestoreTileLayers();
+    });
+  </script>
+</body>
+</html>
