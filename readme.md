@@ -70,14 +70,14 @@ design. Zoom Levels: 10–13.
 
 ### Repository Structure
 
-geog_458_lab4/\
-│\
-├── index.html\
-├── README.md\
-└── assets/\
-├── Modified Basemap/\
-├── RWI Station data/\
-├── Basemap and Data/\
-└── UW Theme/
+geog_458_lab4/
+│
+├── index.html
+├── README.md
+└── assets/
+    ├── Modified Basemap/
+    ├── RWI Station data/
+    ├── Basemap and Data/
+    └── UW Theme/
 
 Each tile set follows the `{z}/{x}/{y}.png` tile pyramid format.
