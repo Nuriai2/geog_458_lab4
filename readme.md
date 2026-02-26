@@ -1,8 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
 
 ## GEOG 458 Lab 4 – Tile Map Generation Live Web Map You can view the interactive web map 
 
