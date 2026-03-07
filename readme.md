@@ -1,83 +1,88 @@
 
-## GEOG 458 Lab 4 – Tile Map Generation Live Web Map You can view the interactive web map 
+# GEOG 458 Lab 4: Tile Generation and Interactive Web Map
 
-### Project Overview 
+## Live Web Map
 
-This project demonstrates the generation of web map tiles using QGIS and
-their integration into a Mapbox GL JS application. The goal of this lab
-was to create four separate raster tile sets and combine them into a
-single interactive web map with layer controls. The map focuses on Road
-Weather Information (RWI) Stations in Seattle, Washington, and explores
-different ways of pairing thematic data with basemap styles. All tiles
-were exported in Web Mercator (EPSG:3857) using QMetaTiles and organized
-in a standard {z}/{x}/{y}.png structure.
+Access the live web map [here](http://127.0.0.1:5500/index.html). This
+web map was created using **Mapbox GL JS** and displays multiple tile
+layers that can be toggled using a layer switcher.
 
-### Study Area 
+## Study Area
 
-The examined geographic area is Seattle, Washington The map extent was
-limited to the Seattle city region in order to:
+The geographic focus of this project is **Seattle, Washington and
+surrounding areas**, including parts of West Seattle, Mercer Island,
+Bellevue, and nearby communities around Puget Sound.
 
--   Reduce tile count
+The tiles were generated only for this region in order to reduce the
+number of tiles uploaded to GitHub.
 
--   Stay within GitHub file size limits
+## Tile Sets
 
--   Improve performance
+#### Tile Set 1 Modified Basemap
 
-### Tile Sets Description  
+This tile set is a customized basemap derived from Mapbox layers.\
+The color scheme was simplified to emphasize geographic context while
+keeping the design visually minimal. The basemap highlights roads,
+labels, and water features while maintaining a clean background.
 
-#### Modified Basemap 
+**Zoom Levels:** 10–13
 
-A customized grayscale basemap created using Mapbox Studio. Minor
-modifications were made to color scheme and styling to create a clean
-monochrome design. Designed to function as a contextual base layer. Zoom
-Levels: 10–13
+![](img/basemap.png)
 
-#### RWI Station Data 
+### Tile Set 2 RWI Station Data (Thematic Layer)
 
-Road Weather Information (RWI) Stations exported as raster tiles. This
-version includes the grayscale basemap baked into the tiles (similar to
-the professor’s 911 example). Ensures the thematic data remains paired
-with grayscale styling even when switching basemap radio buttons. Zoom
-Levels: 10–13
+This tile set represents a thematic dataset showing **Road Weather
+Information (RWI) stations** across the Seattle area. The stations are
+visualized as red points, allowing users to quickly identify the
+distribution of weather monitoring locations.
 
-#### Basemap and Data
+**Zoom Levels:** 10–13
 
-Combined export of grayscale basemap and RWI stations. Functions as a
-fully pre-rendered thematic map. Demonstrates raster pairing of data and
-basemap inside QGIS before export. Zoom Levels: 10–13
+Screenshot:
 
-#### UW Theme 
+![](img/thematic.png)
 
-A themed basemap inspired by University of Washington colors. Designed
-in Mapbox Studio using customized color and styling elements.
-Demonstrates how thematic visual identity can be implemented in basemap
-design. Zoom Levels: 10–13.
+### Tile Set 3 Basemap and Data Combination
 
-###  Technical Workflow 
+This tile set combines the customized basemap with the RWI station
+dataset. By merging the thematic data with the basemap, the map provides
+both geographic context and the ability to interpret the spatial
+distribution of weather stations.
 
-1.  Created and styled basemaps in Mapbox Studio.
-2.  Loaded Mapbox WMTS layers into QGIS.
-3.  Styled and overlaid RWI station data.
-4.  Exported raster tiles using QMetaTiles.
-5.  Organized tile structure in /assets/.
-6.  Integrated all tile sets into a full-screen Mapbox GL JS web
-    application.
-7.  Implemented:
-    1.  Basemap radio controls
-    2.  Tile layer checkboxes
-    3.   Scale bar
-    4.  Navigation controls
+**Zoom Levels:** 10–13
 
-### Repository Structure
+Screenshot:
 
-geog_458_lab4/
-│
-├── index.html
-├── README.md
-└── assets/
-    ├── Modified Basemap/
-    ├── RWI Station data/
-    ├── Basemap and Data/
-    └── UW Theme/
+![](img/basemap-data.png)
 
-Each tile set follows the `{z}/{x}/{y}.png` tile pyramid format.
+### Tile Set 4  UW Theme
+
+This tile set was designed around the **University of Washington color
+theme**, using purple and gold tones inspired by UW branding. The theme
+modifies map colors and visual hierarchy to create a distinct visual
+style while still preserving map readability.
+
+**Zoom Levels:** 10–13
+
+Screenshot:
+
+![](img/UW-theme.png)
+
+## Map Features
+
+The interactive map includes several user interface elements:
+
+• Full screen map display\
+• Zoom controls\
+• Scale bar\
+• Attribution\
+• Basemap switcher (Grayscale, Streets, Satellite)\
+• Layer switcher for the four tile layers
+
+These controls allow users to explore the Seattle region and compare the
+different map styles and thematic layers.
+
+### AI Disclosure
+
+I used AI to assist with debugging code, organizing the README
+structure, and improving written explanations.
