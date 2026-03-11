@@ -3,7 +3,7 @@
 
 ## Live Web Map
 
-Access the live web map [here](http://127.0.0.1:5500/index.html). This
+Access the live web map [here](https://nuriai2.github.io/geog_458_lab4/). This
 web map was created using **Mapbox GL JS** and displays multiple tile
 layers that can be toggled using a layer switcher.
 
